@@ -1,0 +1,10 @@
+build
+local.properties
+.idea
+.gradle
+.allure
+
+*.iml
+.DS_Store
+thumbs.db
+

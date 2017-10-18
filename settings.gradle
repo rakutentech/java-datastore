@@ -1,0 +1,4 @@
+rootProject.name = 'root'
+include ':datastore'
+include ':datastore-android'
+

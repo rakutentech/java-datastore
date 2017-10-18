@@ -1,0 +1,160 @@
+import org.junit.platform.console.options.Details
+
+plugins {
+  id 'java-library'
+  id 'idea'
+
+  id 'org.junit.platform.gradle.plugin'
+
+  id 'checkstyle'
+  id 'findbugs'
+  id 'pmd'
+
+  id 'com.github.ben-manes.versions'       version '0.17.0'
+  id 'com.github.hierynomus.license'       version '0.14.0'
+  id 'pl.allegro.tech.build.axion-release' version '1.8.1'
+  id 'ru.vyarus.animalsniffer'             version '1.4.2'
+  id 'ru.vyarus.quality'                   version '2.4.0'
+  id 'com.dorongold.task-tree'             version '1.3'
+}
+
+sourceCompatibility = '1.7'
+targetCompatibility = '1.7'
+
+dependencies {
+  // runtime dependencies
+  implementation 'commons-codec:commons-codec:1.11'
+
+  // build-time annotations
+  compileOnly 'org.jetbrains:annotations:15.0'
+
+  // compatibility-checking
+  signature 'org.codehaus.mojo.signature:java17:1.0@signature'
+  signature 'net.sf.androidscents.signature:android-api-level-15:4.0.3_r5'
+  compileOnly 'org.codehaus.mojo:animal-sniffer-annotations:1.16'
+
+  // findbugs
+  findbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.0.5'
+  findbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.7.1'
+  compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
+  compileOnly 'com.google.code.findbugs:annotations:3.0.1'
+
+  // unit tests
+  testCompile "org.junit.jupiter:junit-jupiter-api:${versions.junitJupiter}"
+  testCompile "org.junit.jupiter:junit-jupiter-params:${versions.junitJupiter}"
+  testRuntime "org.junit.jupiter:junit-jupiter-engine:${versions.junitJupiter}"
+  testCompileOnly 'org.apiguardian:apiguardian-api:1.0.0'
+
+  testRuntime "org.junit.platform:junit-platform-launcher:${versions.junitJupiterPlatform}"
+  testRuntime "org.junit.platform:junit-platform-runner:${versions.junitJupiterPlatform}"
+  testRuntime "org.junit.platform:junit-platform-console:${versions.junitJupiterPlatform}"
+
+  testCompileOnly "de.mannodermaus.gradle.plugins:android-junit5-embedded-runtime:1.0.12"
+
+  testRuntime "org.apache.logging.log4j:log4j-core:${versions.log4j}"
+  testRuntime "org.apache.logging.log4j:log4j-jul:${versions.log4j}"
+
+  testCompile 'org.assertj:assertj-core:3.8.0'
+  testCompile 'org.bouncycastle:bcprov-jdk15on:1.54'
+  testCompile 'commons-io:commons-io:2.6'
+  testCompileOnly 'org.jetbrains:annotations:15.0'
+}
+
+// tests
+
+compileTestJava {
+  sourceCompatibility = 1.8
+  targetCompatibility = 1.8
+  options.compilerArgs += '-parameters'
+}
+
+sourceSets {
+  main.java.outputDir = new File(buildDir, 'classes/main')
+  test.java.outputDir = new File(buildDir, 'classes/test')
+  test.java.srcDirs += file('src/test/java')
+}
+
+junitPlatform {
+  logManager 'org.apache.logging.log4j.jul.LogManager'
+  details Details.TREE
+  enableStandardTestTask true
+  configurationParameters([
+    'junit.jupiter.extensions.autodetection.enabled': 'true',
+    'junit.jupiter.testinstance.lifecycle.default': 'per_class',
+  ])
+
+  filters {
+    engines.include 'junit-jupiter'
+    engines.exclude 'junit-vintage'
+    includeClassNamePatterns '.*Spec', '.*Suite'
+  }
+}
+
+// IntelliJ
+
+idea {
+  module {
+    //testSourceDirs += file('src/test/java')
+    //scopes.TEST.plus += [configurations.testCompile]
+    outputDir = new File(buildDir, 'classes/main')
+    testOutputDir = new File(buildDir, 'classes/test')
+  }
+}
+
+// release
+
+scmVersion {
+  tag {
+    prefix = 'v'
+    versionSeparator = ''
+  }
+  useHighestVersion = true
+}
+
+project.version = scmVersion.version
+
+// quality
+
+quality {
+  lintOptions = ['deprecation', 'rawtypes', 'unchecked']
+
+  checkstyleVersion = '8.4'
+
+  pmdVersion = '5.8.1'
+
+  findbugsVersion = '3.0.1'
+  findbugsEffort = 'max'
+  findbugsLevel = 'medium'
+
+  animalsnifferVersion = '1.16'
+
+  configDir = "$rootDir/config"
+}
+
+// license
+
+task licenseFormatSrc (type:nl.javadude.gradle.plugins.license.License) {
+  source = files('src/main/java', 'src/test/java')
+  resources
+}
+licenseFormat.dependsOn licenseFormatSrc
+
+license {
+  exclude '**/*.xml'
+  header = rootProject.file('config/license/fileheader.txt')
+  mapping {
+    java = 'SLASHSTAR_STYLE'
+  }
+}
+
+//
+tasks.withType(JavaCompile) {
+  options.encoding = 'UTF-8'
+}
+
+afterEvaluate {
+  check.dependsOn 'license'
+  build.dependsOn 'dependencyUpdates'
+}
+
+// vim:et:sts=2:sw=2:ts=2:ff=unix:

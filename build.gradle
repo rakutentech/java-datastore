@@ -1,0 +1,28 @@
+buildscript {
+  ext {
+    versions = [
+      allureJUnit5:         '2.0-BETA19',
+      aspectJ:              '1.8.10',
+      junitJupiter:         '5.0.1',
+      junitJupiterPlatform: '1.0.1',
+      log4j:                '2.9.0',
+    ]
+  }
+
+  repositories {
+    google()
+    jcenter()
+  }
+  dependencies {
+    classpath "org.junit.platform:junit-platform-gradle-plugin:${versions.junitJupiterPlatform}"
+    classpath 'com.kncept.junit5.reporter:junit-reporter:1.0.0'
+  }
+}
+
+allprojects {
+  repositories {
+    google()
+    jcenter()
+  }
+}
+// vim:et:sts=2:sw=2:ts=2:ff=unix:
