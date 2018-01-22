@@ -3,9 +3,9 @@ buildscript {
     versions = [
       allureJUnit5:         '2.0-BETA19',
       aspectJ:              '1.8.10',
-      junitJupiter:         '5.0.1',
-      junitJupiterPlatform: '1.0.1',
-      log4j:                '2.9.0',
+      junitJupiter:         '5.1.0-M1',
+      junitJupiterPlatform: '1.1.0-M1',
+      log4j:                '2.10.0',
     ]
   }
 

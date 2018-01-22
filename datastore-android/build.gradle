@@ -8,7 +8,7 @@ plugins {
   id 'com.github.ben-manes.versions'       version '0.17.0'
   id 'com.github.hierynomus.license'       version '0.14.0'
   id 'pl.allegro.tech.build.axion-release' version '1.8.1'
-  id 'ru.vyarus.animalsniffer'             version '1.4.2'
+  id 'ru.vyarus.animalsniffer'             version '1.4.3'
   id 'ru.vyarus.quality'                   version '2.4.0'
 }
 
@@ -30,7 +30,7 @@ dependencies {
   compileOnly 'org.codehaus.mojo:animal-sniffer-annotations:1.16'
 
   // findbugs
-  findbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.0.5'
+  findbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.2.0'
   findbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.7.1'
   compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
   compileOnly 'com.google.code.findbugs:annotations:3.0.1'
@@ -41,7 +41,7 @@ dependencies {
   testRuntime "org.apache.logging.log4j:log4j-core:${versions.log4j}"
   testRuntime "org.apache.logging.log4j:log4j-jul:${versions.log4j}"
   testCompileOnly 'org.apiguardian:apiguardian-api:1.0.0'
-  testCompile 'org.assertj:assertj-core:3.8.0'
+  testCompile 'org.assertj:assertj-core:3.9.0'
   //testCompile 'org.mockito:mockito-core:2.11.0'
 }
 
